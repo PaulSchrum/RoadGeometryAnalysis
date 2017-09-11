@@ -368,6 +368,7 @@ def compute_arc_parameters(point1, point2, point3):
     :param point1: Back point
     :param point2: Current point
     :param point3: Ahead point
+    :requirement: Each point must have X and Y values (note capitals).
     :return: None
     """
     point2.pt2pt = struct()
