@@ -24,6 +24,10 @@ from ExtendedPoint import any_in_point_equals_any_in_other
 from ExtendedPoint import compute_arc_parameters
 print 'finished imports'
 
+def arcPrint(aString):
+    print aString
+    arcpy.AddMessage(aString)
+
 successList = []
 
 
@@ -44,7 +48,12 @@ def analyzePolylines(fcs, outDir, loadCSVtoFeatureClass=False,spatialRef=None):
         arcPrint("Unable to create output directory. No files processed.")
         return
 
-    for fc in fcs:
+    if type(fcs) is str:
+        fcs_list = [fcs]
+    else:
+        fcs_list = fcs
+
+    for fc in fcs_list:
         try:
             arcPrint("Now processing {0}".format(fc))
             csvName = processFCforCogoAnalysis(fc, outDir, spatialRef=spatialRef)
@@ -230,7 +239,6 @@ class _PolylineSegment(collections.deque):
     def endPoints(self):
         return self[0], self[-1]
 
-
 def _breakPolylinesIntoSegments(fc, spatialRef=None):
     """
     Given a feature class (Polyline), returns all segments
@@ -241,7 +249,9 @@ def _breakPolylinesIntoSegments(fc, spatialRef=None):
     :rtype: deque (of list of segments)
     """
     segmentDeque = collections.deque()
-    lines_cursor = arcpy.da.SearchCursor(fc, ["SHAPE@", "OBJECTID"], spatial_reference=spatialRef)
+    oidName = arcpy.Describe(fc).OIDFieldName
+
+    lines_cursor = arcpy.da.SearchCursor(fc, ["SHAPE@", oidName], spatial_reference=spatialRef)
     try:
         for lines_row in lines_cursor:
             oid = lines_row[1]
@@ -308,23 +318,26 @@ if __name__ == '__main__':
     """
     Code for testing outside of ArcMap.
     """
-    arcpy.env.workspace = r"C:\GISdata\SelectedRoads.gdb"
-    featureClasses = [r'C:\GISdata\SelectedRoads.gdb\LeesvilleRoadRaleigh',
-                      r'C:\GISdata\SelectedRoads.gdb\CatesAvenue',
-                      r'C:\GISdata\SelectedRoads.gdb\DanAllenDrive',
-                      r'C:\GISdata\SelectedRoads.gdb\FaucetteDrive',
-                      r'C:\GISdata\SelectedRoads.gdb\MorrillDrive',
-                      ]
-    neuseRiver = [r"C:\SourceModules\CogoPy\data\other\Neuse401.shp"]
-    outputDir = r"C:\GISdata\testOutput"
+    if False:
+        arcpy.env.workspace = r"C:\GISdata\SelectedRoads.gdb"
+        featureClasses = [r'C:\GISdata\SelectedRoads.gdb\LeesvilleRoadRaleigh',
+                          r'C:\GISdata\SelectedRoads.gdb\CatesAvenue',
+                          r'C:\GISdata\SelectedRoads.gdb\DanAllenDrive',
+                          r'C:\GISdata\SelectedRoads.gdb\FaucetteDrive',
+                          r'C:\GISdata\SelectedRoads.gdb\MorrillDrive',
+                          ]
+        neuseRiver = [r"C:\SourceModules\CogoPy\data\other\Neuse401.shp"]
+        outputDir = r"C:\GISdata\testOutput"
 
-    analyzePolylines(neuseRiver,
-    # analyzePolylines(featureClasses,
-                     outputDir,
-                     loadCSVtoFeatureClass=False,
-                     spatialRef=None)
+        analyzePolylines(neuseRiver,
+        # analyzePolylines(featureClasses,
+                         outputDir,
+                         loadCSVtoFeatureClass=False,
+                         spatialRef=None)
+    else:
+        arcpy.env.workspace = r"D:\NCSU\201703 Fall 2017\GIS 630 Independent Study\GIS\inputs"
+        Y15A = r"D:\NCSU\201703 Fall 2017\GIS 630 Independent Study\GIS\inputs\Y15A.shp"
+        outputDir = r"D:\NCSU\201703 Fall 2017\GIS 630 Independent Study\GIS\outputs"
 
+        analyzePolylines(Y15A, outputDir, loadCSVtoFeatureClass=False, spatialRef=None)
 
-def arcPrint(aString):
-    print aString
-    arcpy.AddMessage(aString)
