@@ -64,4 +64,6 @@ arcpy.AddMessage("All feature classes will be processed in the current data fram
 arcpy.AddMessage(dfSr.name)
 arcpy.AddMessage(' ')
 
+inputs = [s.replace("'", "") for s in inputs]
+
 analyzePolylines(inputs,outDir,createNewShapefile,dfSr)
