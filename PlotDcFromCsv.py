@@ -27,9 +27,19 @@ def plotCSVfile(filename):
         y.append(float(lastRow[degreeIndex]))
         cumulative_dist += float(row[distBackIndex])
         x.append(cumulative_dist)
+    return x, y
 
-    plt.plot(x,y, 'ro-') #, label='GIS')
-    plt.xlabel('Length Along Chords')
+
+def plotAllXYlists(listOfXYvals):
+    for aDataSet in listOfXYvals:
+        name = aDataSet[0]
+        dataSet = aDataSet[1]
+        x = dataSet[0]
+        y = dataSet[1]
+        print len(x), len(y)
+        plt.plot(x,y, 'ro-') #, label='GIS')
+        plt.xlabel('Length Along Chords')
+
     plt.ylabel('Dc')
     plt.suptitle('Y15A Degree of Curve vs. Length Along Chords')
     plt.title('From GIS Polyline File')
@@ -38,9 +48,11 @@ def plotCSVfile(filename):
     plt.show()
 
 if __name__ == '__main__':
-    fName = r"D:\SourceModules\Python\RoadGeometryAnalysis\TestFiles\CSV\Y15A.csv"
+    allFiles = [r"D:\SourceModules\Python\RoadGeometryAnalysis\TestFiles\CSV\Y15A_GIS.csv"]
     if len(sys.argv) > 1:
-        fName = sys.argv[1]
-    plotCSVfile(fName)
+        allFiles = sys.argv[1:]
+    plotsList = []
+    for fName in allFiles:
+        plotsList.append((fName, plotCSVfile(fName)))
 
-
+    plotAllXYlists(plotsList)
