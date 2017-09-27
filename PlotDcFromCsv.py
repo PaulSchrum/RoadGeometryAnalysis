@@ -6,6 +6,18 @@ https://pythonprogramming.net/loading-file-data-matplotlib-tutorial/
 import matplotlib.pyplot as plt
 import csv, sys
 
+def computeHalfArcLength(rowList, workingRowIndex, backIndex, aheadIndex):
+    aRow = rowList[workingRowIndex]
+    lenBack = float(aRow[backIndex])
+    if workingRowIndex == 2:
+        lenBack = lenBack * 2.0
+
+    lenAhead = float(aRow[aheadIndex])
+    if workingRowIndex == (len(rowList) - 2):
+        lenAhead = lenAhead * 2.0
+
+    return lenBack, lenAhead
+
 def plotCSVfile(filename):
     x = []
     y = []
@@ -18,9 +30,11 @@ def plotCSVfile(filename):
         distAheadIndex = headerRow.index("DistanceAhead")
 
         cumulative_dist = 0.0
-        for row in plots[2:-2]:
-            cumulative_dist += float(row[distBackIndex])
+        for idx, row in enumerate(plots[2:-2]):
+            distBack, distAhead = computeHalfArcLength(plots, idx+2, distBackIndex, distAheadIndex)
+            cumulative_dist += distBack
             x.append(cumulative_dist)
+            cumulative_dist += distAhead
             y.append(float(row[degreeIndex]))
 
         lastRow = plots[-2]
