@@ -95,11 +95,14 @@ class ExtendedPoint(object):
             p2pString = ',,'
 
         if self.arc:
-            arcString = """,{0},{1},{2},{3}
+            arcString = """,{0},{1},{2},{3},{4},{5}
             """.format(self.arc.degreeCurve100,
                        self.arc.radius,
                        cvt_radians_to_degrees(self.arc.deflection),
-                       cvt_radians_to_degrees(self.arc.chordVector.azimuth))
+                       cvt_radians_to_degrees(self.arc.chordVector.azimuth),
+                       self.arc.lengthBack,
+                       self.arc.lengthAhead
+                       )
             arcString = "".join(arcString.split())
         else:
             arcString = ',,,,'
@@ -183,7 +186,8 @@ class ExtendedPoint(object):
 
     @staticmethod
     def header_list():
-        return 'X,Y,Degree,Radius,ArcDeflection,ChordDirection,PointsDefl,DistanceBack,DistanceAhead'
+        return 'X,Y,Degree,Radius,ArcDeflection,ChordDirection,' + \
+               'PointsDefl,DistanceBack,DistanceAhead,ArcLengthBack,ArcLengthAhead'
 
 AzimuthPair = collections.namedtuple('AzimuthPair', 'interiorSolution exteriorSolution')
 
@@ -396,6 +400,8 @@ def compute_arc_parameters(point1, point2, point3):
         point2.arc.radiusStartVector = False
         point2.arc.radiusEndVector = False
         point2.arc.deflection = 0.0
+        point2.arc.ArcLengthBack = 0.0
+        point2.arc.ArcLengthAhead = 0.0
         return
 
     # compute Center point of resulting arc

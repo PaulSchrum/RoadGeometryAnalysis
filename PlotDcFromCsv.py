@@ -37,7 +37,7 @@ def plotAllXYlists(listOfXYvals):
         x = dataSet[0]
         y = dataSet[1]
         print len(x), len(y)
-        plt.plot(x,y, 'ro-') #, label='GIS')
+        plt.plot(x,y, 'ro-', label='GIS')
         plt.xlabel('Length Along Chords')
 
     plt.ylabel('Dc')
