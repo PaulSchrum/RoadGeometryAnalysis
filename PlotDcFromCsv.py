@@ -26,8 +26,8 @@ def plotCSVfile(filename):
         plots = list(csv.reader(csvfile, delimiter=','))
         headerRow = plots[0]
         degreeIndex = headerRow.index("Degree")
-        distBackIndex = headerRow.index("DistanceBack")
-        distAheadIndex = headerRow.index("DistanceAhead")
+        distBackIndex = headerRow.index("ArcLengthBack")
+        distAheadIndex = headerRow.index("ArcLengthAhead")
 
         cumulative_dist = 0.0
         for idx, row in enumerate(plots[2:-2]):
@@ -65,6 +65,9 @@ if __name__ == '__main__':
     allFiles = [r"D:\SourceModules\Python\RoadGeometryAnalysis\TestFiles\CSV\Y15A_GIS.csv"]
     if len(sys.argv) > 1:
         allFiles = sys.argv[1:]
+        print "User arguments being used."
+    else:
+        print "Default value being used."
     plotsList = []
     for fName in allFiles:
         plotsList.append((fName, plotCSVfile(fName)))
